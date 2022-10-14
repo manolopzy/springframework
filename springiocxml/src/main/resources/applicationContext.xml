@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="someService" class="com.worldexplorers.springioc.service.impl.SomeServiceImpl"></bean>
+  
+  <!-- there are two types of injections here, "set injection" and "constructor injection", through which 
+  we can initialize the beans. -->
+  <!-- 1 set injection -->
+  <!-- when we use "set injection", there must be corresponding setters for each property specified using 
+  the <property/> tag -->
+  <bean id="student" class = "com.worldexplorers.springioc.bean.Student">
+	  <!--  org.springframework.beans.factory.BeanCreationException: Error creating bean with name 
+	  'student' defined in class path resource [applicationContext.xml]: Error setting property values; 
+	  nested exception is org.springframework.beans.NotWritablePropertyException: Invalid property 'name' 
+	  of bean class [com.worldexplorers.springioc.bean.Student]: Bean property 'name' is not writable 
+	  or has an invalid setter method. Does the parameter type of the setter match the return type 
+	  of the getter? -->
+	  <!-- the following three properties must have corresponding setters in the class -->
+	  <property name="name" value = "Pedro"/><!-- setName(String name) -->
+	  <property name="age" value = "27"/>
+	  <property name="height" value = "1.9"/>
+	  <!-- reference property initialization -->
+	  <property name="school" ref = "school"/><!-- setSchool(School school) -->
+  </bean>
+  <bean id="school" class = "com.worldexplorers.springioc.bean.School">
+	  <property name="name" value = "World Explorers"/>
+	  <property name="adress" value = "Earth"/>
+  </bean>
+  
+  <!-- 2 constructor injection -->
+  <!-- there must be a constructor with the following specified arguments, 
+  otherwise there will be bean creation errors -->
+  <bean id="teacher" class = "com.worldexplorers.springioc.bean.Teacher">
+	  <constructor-arg name="name" value = "Juan"/>
+	  <constructor-arg name="age" value = "27"/>
+	  <constructor-arg name="height" value = "1.9"/>
+  </bean>
+  
+  
+  <!-- the automatic injection of a bean's reference property -->
+  <!-- 3 autowire injection byName or byType-->
+  <!-- However there must be a setter or constructor provided to initialize the corresponding reference property in the class -->
+  <bean id="librarian" class = "com.worldexplorers.springioc.bean.Librarian" autowire = "byName">
+  <!-- We use "autowire" to automatically inject the bean's reference type properties.
+  there are two ways, by name, and by type, if we use "by name", then, the property's name 
+  in the class must be the same as the name or id of the bean in the configuration file  -->
+  <!-- <property name="school" ref = "school"/> -->
+  </bean>
+  <bean id="librarian2" class = "com.worldexplorers.springioc.bean.Librarian" autowire = "byType">
+  <!-- We use "autowire" to automatically inject the bean's reference type properties.
+  there are two ways, by name, and by type, if we use "by name", then, the property's name 
+  in the class must be the same as the name or id of the bean in the configuration file  -->
+  <!-- <property name="school" ref = "school"/> When "by type" is used, the reference property's 
+  type must be a super class of "school" bean configured in this file.-->
+  </bean>
+  
+  <!-- We can combine various configuration file using import tag -->
+  <!-- <import resource="classpath:/resources/spring-other-beans.xml"/> -->
+  <import resource="classpath:spring-other-beans.xml"/>
+  
+</beans>
